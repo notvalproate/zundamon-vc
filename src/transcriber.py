@@ -1,6 +1,7 @@
 import os
 import zipfile
 import json
+import unicodedata as ud
 from queue import Queue
 
 import wget
@@ -60,4 +61,4 @@ class Transcriber:
                 result = self.rec.Result()
                 text = json.loads(result)['text']
 
-                print(f"Text: {text.replace(' ', '')}")
+                print(f"Text: {ud.normalize('NFC', text).replace(' ', '')}")
