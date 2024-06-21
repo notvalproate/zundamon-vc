@@ -21,6 +21,7 @@ def start_recording(command_args):
 
     if recorder.is_valid_index(device_index):
         print(f"Recording from device {device_index}")
+        recorder.record_microphone(device_index)
     else:
         print("Invalid device index. Please use 'list' to list available devices.")
 
@@ -28,6 +29,10 @@ def start_recording(command_args):
 if __name__ == '__main__':
     command_args = sys.argv[1:]
 
+    if len(command_args) == 0:
+        print("Invalid command. Please use 'start' to start recording.")
+        sys.exit(1)
+        
     command = command_args[0]
 
     if command == 'start':
