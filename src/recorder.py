@@ -2,7 +2,6 @@ from queue import Queue
 from threading import Thread
 
 import pyaudio
-import readchar
 
 CHANNELS = 1
 FRAME_RATE = 16000
@@ -11,10 +10,10 @@ AUDIO_FORMAT = pyaudio.paInt16
 SAMPLE_SIZE = 2
 
 class Recorder:
-    def __init__(self):
+    def __init__(self, run_app_queue):
         self.pa = pyaudio.PyAudio()
-        self.keep_recording = Queue()
         self.recordings = Queue()
+        self.run_app_queue = run_app_queue
     
 
     def list_devices(self):
@@ -37,7 +36,7 @@ class Recorder:
         return True
 
 
-    def record_thread(self, index, chunk=1024):
+    def record_microphone(self, index, chunk=1024):
         stream = self.pa.open(format=AUDIO_FORMAT,
                         channels=CHANNELS,
                         rate=FRAME_RATE,
@@ -47,7 +46,7 @@ class Recorder:
         
         frames = []
 
-        while not self.keep_recording.empty():
+        while not self.run_app_queue.empty():
             data = stream.read(chunk)
             frames.append(data)
 
@@ -57,25 +56,6 @@ class Recorder:
 
         stream.stop_stream()
         stream.close()
-
-
-    def wait_for_stop_thread(self):
-        print("Press Any Key to stop recording...")
-        readchar.readchar()
-        self.keep_recording.get()
-
-
-    def record_microphone(self, index):
-        self.keep_recording.put(True)
-
-        record = Thread(target=self.record_thread, args=(index,))
-        record.start()
-
-        stop = Thread(target=self.wait_for_stop_thread)
-        stop.start()
-
-        record.join()
-        stop.join()
 
 
     def __del__(self):
