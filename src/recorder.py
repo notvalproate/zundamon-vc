@@ -13,7 +13,7 @@ SAMPLE_SIZE = 2
 class Recorder:
     def __init__(self):
         self.pa = pyaudio.PyAudio()
-        self.record = Queue()
+        self.keep_recording = Queue()
         self.recordings = Queue()
     
 
@@ -47,7 +47,7 @@ class Recorder:
         
         frames = []
 
-        while not self.record.empty():
+        while not self.keep_recording.empty():
             data = stream.read(chunk)
             frames.append(data)
 
@@ -62,11 +62,11 @@ class Recorder:
     def wait_for_stop_thread(self):
         print("Press Any Key to stop recording...")
         readchar.readchar()
-        self.record.get()
+        self.keep_recording.get()
 
 
     def record_microphone(self, index):
-        self.record.put(True)
+        self.keep_recording.put(True)
 
         record = Thread(target=self.record_thread, args=(index,))
         record.start()

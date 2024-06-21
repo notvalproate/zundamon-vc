@@ -2,7 +2,7 @@ import sys
 from threading import Thread
 from queue import Queue
 
-from audio import Recorder
+from recorder import Recorder
 
 recorder = Recorder()
 
@@ -32,7 +32,7 @@ if __name__ == '__main__':
     if len(command_args) == 0:
         print("Invalid command. Please use 'start' to start recording.")
         sys.exit(1)
-        
+
     command = command_args[0]
 
     if command == 'start':
