@@ -3,7 +3,7 @@ from queue import Queue
 
 CHANNELS = 1
 FRAME_RATE = 16000
-RECORD_SECONDS = 5
+RECORD_DURATION_SECONDS = 5
 AUDIO_FORMAT = pyaudio.paInt16
 SAMPLE_SIZE = 2
 
@@ -11,6 +11,7 @@ class Recorder:
     def __init__(self):
         self.pa = pyaudio.PyAudio()
         self.record = Queue()
+        self.recordings = Queue()
     
 
     def list_devices(self):
@@ -33,7 +34,7 @@ class Recorder:
         return True
 
 
-    def record_microphone(self, index, chunk):
+    def record_microphone(self, index, chunk=1024):
         stream = self.pa.open(format=AUDIO_FORMAT,
                         channels=CHANNELS,
                         rate=FRAME_RATE,
@@ -43,6 +44,16 @@ class Recorder:
         
         frames = []
 
+        while not self.record.empty():
+            data = stream.read(chunk)
+            frames.append(data)
+
+            if len(frames) >= (FRAME_RATE * RECORD_DURATION_SECONDS) / chunk:
+                self.recordings.put(frames.copy())
+                frames.clear()
+
+        stream.stop_stream()
+        stream.close()
 
     def __del__(self):
         self.pa.terminate()

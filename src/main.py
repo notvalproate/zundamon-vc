@@ -4,9 +4,7 @@ from queue import Queue
 
 from audio import Recorder
 
-recordings = Queue()
 recorder = Recorder()
-
 
 def start_recording(command_args):
     if(len(command_args) != 2):
