@@ -4,11 +4,13 @@ from threading import Thread
 import readchar
 
 from recorder import Recorder
+from transcriber import Transcriber
 
 class Zundamon:
     def __init__(self):
         self.run_app = Queue()
         self.recorder = Recorder(self.run_app)
+        self.transcriber = Transcriber(self.run_app)
     
 
     def wait_for_stop_thread(self):
