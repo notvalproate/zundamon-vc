@@ -23,7 +23,7 @@ class Zundamon:
         self.run_app.put(True)
 
         record = Thread(target=self.recorder.record_microphone, args=(index,))
-        transcribe = Thread(target=self.transcriber.transcribe_audio, args=(self.recorder.recordings,))
+        transcribe = Thread(target=self.transcriber.transcribe_recordings, args=(self.recorder.recordings,))
         stop = Thread(target=self.wait_for_stop_thread)
 
         record.start()
