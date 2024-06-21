@@ -3,9 +3,10 @@ A voice changer that uses the VOICEVOX engine to convert speech to zundamon's vo
 
 Commands Im Running rn for testing:
 ```
-pip install numpy
-pip install soundfile
-pip install torch --index-url https://download.pytorch.org/whl/cu121
-pip install git+https://github.com/openai/whisper.git
+pip install pyaudio
 pip install SpeechRecognition
+pip install numpy==1.26.4
+pip install soundfile
+pip install torch
+pip install git+https://github.com/openai/whisper.git
 ```

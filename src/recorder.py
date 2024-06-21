@@ -33,7 +33,7 @@ class Recorder:
         while not self.run_app_queue.empty():
             with sr.Microphone(device_index=index) as mic:
                 try:
-                    zundamon_recognizer.adjust_for_ambient_noise(mic, duration=0.2)
+                    zundamon_recognizer.adjust_for_ambient_noise(mic, duration=0.4)
                     audio = zundamon_recognizer.listen(mic)
                     self.recordings.put(audio)
                 except sr.UnknownValueError:
