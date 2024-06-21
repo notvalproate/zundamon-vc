@@ -1,5 +1,4 @@
 from queue import Queue
-from threading import Thread
 
 class Transcriber:
     def __init__(self, run_app_queue):
@@ -7,4 +6,8 @@ class Transcriber:
         self.transcriptions = Queue()
     
     def transcribe_audio(self, recordings):
-        pass
+        while not self.run_app_queue.empty():
+            if not recordings.empty():
+                recording = recordings.get()
+                print(f"Transcribing {len(recording)} frames")
+                
