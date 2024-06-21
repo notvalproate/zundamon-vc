@@ -1,61 +1,40 @@
 from queue import Queue
 
-import pyaudio
+import speech_recognition as sr
 
-CHANNELS = 1
-FRAME_RATE = 16000
-RECORD_DURATION_SECONDS = 5
-AUDIO_FORMAT = pyaudio.paInt16
-SAMPLE_SIZE = 2
+from recognizer import zundamon_recognizer
 
 class Recorder:
     def __init__(self, run_app_queue):
-        self.pa = pyaudio.PyAudio()
         self.recordings = Queue()
         self.run_app_queue = run_app_queue
     
 
     def list_devices(self):
-        for i in range(self.pa.get_device_count()):
-            device = self.pa.get_device_info_by_index(i)
+        working_mics = sr.Microphone.list_working_microphones()
 
-            if device['maxInputChannels'] > 0:
-                print(f"\nInput Device {i}: {device['name']}\nSample Rate: {device['defaultSampleRate']}")
+        print("\nAvailable microphones:\n")
+        for index in working_mics.keys():
+            print(f"\nIndex: {index} - {working_mics[index]}\n")
 
 
     def is_valid_index(self, index):
-        if index < 0 and index >= self.pa.get_device_count():
-            return False
-        
-        device = self.pa.get_device_info_by_index(index)
+        working_mics = sr.Microphone.list_working_microphones()
 
-        if(device['maxInputChannels'] <= 0):
+        if index not in working_mics.keys():
             return False
         
         return True
 
 
-    def record_microphone(self, index, chunk=1024):
-        stream = self.pa.open(format=AUDIO_FORMAT,
-                        channels=CHANNELS,
-                        rate=FRAME_RATE,
-                        input=True,
-                        input_device_index=index,
-                        frames_per_buffer=chunk)
-        
-        frames = []
+    def record_microphone(self, index):
+        print(f"Recording from device {index}")
 
         while not self.run_app_queue.empty():
-            data = stream.read(chunk)
-            frames.append(data)
-
-            if len(frames) >= (FRAME_RATE * RECORD_DURATION_SECONDS) / chunk:
-                self.recordings.put(frames.copy())
-                frames.clear()
-
-        stream.stop_stream()
-        stream.close()
-
-
-    def __del__(self):
-        self.pa.terminate()
+            with sr.Microphone(device_index=index) as mic:
+                try:
+                    zundamon_recognizer.adjust_for_ambient_noise(mic, duration=0.2)
+                    audio = zundamon_recognizer.listen(mic)
+                    self.recordings.put(audio)
+                except sr.UnknownValueError:
+                    print("Could not understand audio")

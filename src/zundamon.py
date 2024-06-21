@@ -51,7 +51,5 @@ class Zundamon:
         if not self.recorder.is_valid_index(device_index):
             print("Invalid device index. Please use 'list' to list available devices.")
             return
-            
-        print(f"Recording from device {device_index}")  
 
         self.run_threads(device_index)        
