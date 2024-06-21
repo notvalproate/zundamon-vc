@@ -30,26 +30,20 @@ class Zundamon:
         transcribe.start()
         stop.start()
 
-        record.join()
-        transcribe.join()
         stop.join()
+        transcribe.join()
+        record.join()
 
 
     def start_app(self, args):
-        if(len(args) < 2):
-            print("Invalid number of arguments. Please atleast provide the device index after 'start'.")
-            return
-
         device_index = None
 
         try:
             device_index = int(args[1])
-        except ValueError:
-            print("Invalid device index. Please use 'list' to list available devices.")
-            return
+            if not self.recorder.is_valid_index(device_index):
+                print("Invalid device index. Please use 'list' to list available devices.")
+                return
+        except Exception:
+            pass
     
-        if not self.recorder.is_valid_index(device_index):
-            print("Invalid device index. Please use 'list' to list available devices.")
-            return
-
         self.run_threads(device_index)        

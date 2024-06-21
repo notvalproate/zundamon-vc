@@ -13,9 +13,9 @@ class Recorder:
     def list_devices(self):
         working_mics = sr.Microphone.list_working_microphones()
 
-        print("\nAvailable microphones:\n")
+        print("\nAvailable microphones:")
         for index in working_mics.keys():
-            print(f"\nIndex: {index} - {working_mics[index]}\n")
+            print(f"\nIndex: {index}\nName: {working_mics[index]}\n")
 
 
     def is_valid_index(self, index):
@@ -28,12 +28,15 @@ class Recorder:
 
 
     def record_microphone(self, index):
-        print(f"Recording from device {index}")
+        if index is None:
+            print("Recording from default device")
+        else:
+            print(f"Recording from device {index}")
 
         while not self.run_app_queue.empty():
             with sr.Microphone(device_index=index) as mic:
                 try:
-                    zundamon_recognizer.adjust_for_ambient_noise(mic, duration=0.4)
+                    zundamon_recognizer.adjust_for_ambient_noise(mic, duration=0.25)
                     audio = zundamon_recognizer.listen(mic)
                     self.recordings.put(audio)
                 except sr.UnknownValueError:
