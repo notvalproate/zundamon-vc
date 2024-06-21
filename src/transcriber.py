@@ -11,4 +11,7 @@ class Transcriber:
             if not recordings.empty():
                 audio = recordings.get()
                 text = zundamon_recognizer.recognize_whisper(audio_data=audio, model='base', language='ja')
-                self.synthesizer.synthesize_text(text)
+
+                if text != '' and len(text) < 120:
+                    print(f"Transcribed text: {text}")
+                    self.synthesizer.synthesize_text(text)
