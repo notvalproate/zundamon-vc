@@ -2,11 +2,30 @@ import sys
 from threading import Thread
 from queue import Queue
 
-messages = Queue()
-recordings = Queue()
+from audio import Recorder
 
-def start_recording(data):
-    print(data)
+recordings = Queue()
+recorder = Recorder()
+
+
+def start_recording(command_args):
+    if(len(command_args) != 2):
+        print("Invalid number of arguments. Please provide only the device index after 'start'.")
+        return
+
+    device_index = None
+
+    try:
+        device_index = int(command_args[1])
+    except ValueError:
+        print("Invalid device index. Please use 'list' to list available devices.")
+        return
+
+    if recorder.is_valid_index(device_index):
+        print(f"Recording from device {device_index}")
+    else:
+        print("Invalid device index. Please use 'list' to list available devices.")
+
 
 if __name__ == '__main__':
     command_args = sys.argv[1:]
@@ -14,6 +33,8 @@ if __name__ == '__main__':
     command = command_args[0]
 
     if command == 'start':
-        start_recording("Started transcripting")
+        start_recording(command_args=command_args)
+    elif command == 'list':
+        recorder.list_devices()
     else:
         print("Invalid command. Please use 'start' to start recording.")
