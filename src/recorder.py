@@ -37,7 +37,9 @@ class Recorder:
             with sr.Microphone(device_index=index) as mic:
                 try:
                     zundamon_recognizer.adjust_for_ambient_noise(mic, duration=0.25)
+                    print("Listening...")
                     audio = zundamon_recognizer.listen(mic)
+                    print("Finished Listening!")
                     self.recordings.put(audio)
                 except sr.UnknownValueError:
                     print("Could not understand audio")
