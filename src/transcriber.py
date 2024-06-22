@@ -15,6 +15,6 @@ class Transcriber:
 
             text = zundamon_recognizer.recognize_whisper(audio_data=audio, model='base', language='ja')
 
-            if text != '' and len(text) < 120 and text != 'ご視聴ありがとうございました' and 'スタッフの音が出てくる' not in text:
+            if text != '' and len(text) < 120 and text != 'ご視聴ありがとうございました' and 'スタッフ' not in text:
                 print(f"Transcribed text: {text}")
                 self.synthesizer.synthesize_text(text)

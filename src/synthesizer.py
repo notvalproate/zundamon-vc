@@ -11,6 +11,8 @@ p = pyaudio.PyAudio()
 virtual_audio_cable_index = None
 
 def check_synthesis_installation():
+    global p, virtual_audio_cable_index
+
     try:
         requests.get(VOICEVOX_API_URL)
     except requests.exceptions.ConnectionError:
@@ -29,6 +31,8 @@ def check_synthesis_installation():
 
 class Synthesizer:
     def play_audio_through_vb_cable(self, audio):
+        global virtual_audio_cable_index
+
         audio_file = BytesIO(audio)
         wav_file = wave.open(audio_file, 'rb')
 
@@ -69,6 +73,3 @@ class Synthesizer:
         audio_query = self.get_audio_query(text)
         print("Synthesizing...")
         self.synthesize_to_audio(audio_query)
-
-    def __del__(self):
-        self.p.terminate()
