@@ -13,8 +13,8 @@ class Transcriber:
             if audio == 'EXIT':
                 break
 
-            text = zundamon_recognizer.recognize_whisper(audio_data=audio, model='small', language='ja')
+            text = zundamon_recognizer.recognize_whisper(audio_data=audio, model='base', language='ja')
 
-            if text != '' and len(text) < 120 and text != 'ご視聴ありがとうございました':
+            if text != '' and len(text) < 120 and text != 'ご視聴ありがとうございました' and 'スタッフの音が出てくる' not in text:
                 print(f"Transcribed text: {text}")
                 self.synthesizer.synthesize_text(text)

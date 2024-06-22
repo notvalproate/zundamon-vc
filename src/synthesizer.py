@@ -17,6 +17,38 @@ class Synthesizer:
             exit(1)
         
         self.p = pyaudio.PyAudio()
+        self.virtual_audio_cable_index = self.get_virtual_audio_cable_index()
+
+
+    def get_virtual_audio_cable_index(self):
+        for i in range(self.p.get_device_count()):
+            if 'CABLE Input (VB-Audio Virtual ' in self.p.get_device_info_by_index(i)['name']:
+                return i
+
+        return None
+
+
+    def play_audio_through_vb_cable(self, audio):
+        audio_file = BytesIO(audio)
+        wav_file = wave.open(audio_file, 'rb')
+
+        stream = self.p.open(format=self.p.get_format_from_width(wav_file.getsampwidth()),
+                channels=wav_file.getnchannels(),
+                rate=wav_file.getframerate(),
+                output=True,
+                output_device_index=self.virtual_audio_cable_index)
+        
+        chunk = 1024
+        data = wav_file.readframes(chunk)
+
+        while data:
+            stream.write(data)
+            data = wav_file.readframes(chunk)
+        
+        stream.stop_stream()
+        stream.close()
+        
+        wav_file.close()
 
 
     def get_audio_query(self, text):
@@ -30,25 +62,7 @@ class Synthesizer:
         response = requests.post(f'{VOICEVOX_API_URL}/synthesis', params=params, data=audio_query)
         
         print("Playing audio...")
-        audio_file = BytesIO(response.content)
-        wav_file = wave.open(audio_file, 'rb')
-
-        stream = self.p.open(format=self.p.get_format_from_width(wav_file.getsampwidth()),
-                channels=wav_file.getnchannels(),
-                rate=wav_file.getframerate(),
-                output=True)
-        
-        chunk = 1024
-        data = wav_file.readframes(chunk)
-
-        while data:
-            stream.write(data)
-            data = wav_file.readframes(chunk)
-        
-        stream.stop_stream()
-        stream.close()
-        
-        wav_file.close()
+        self.play_audio_through_vb_cable(response.content)
 
 
     def synthesize_text(self, text):
