@@ -1,5 +1,4 @@
 import sys
-
 from zundamon import Zundamon
 
 if __name__ == '__main__':

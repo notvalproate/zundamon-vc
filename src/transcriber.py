@@ -8,10 +8,13 @@ class Transcriber:
 
     def transcribe_recordings(self, recordings):
         while not self.run_app_queue.empty():
-            if not recordings.empty():
-                audio = recordings.get()
-                text = zundamon_recognizer.recognize_whisper(audio_data=audio, model='base', language='ja')
+            audio = recordings.get()
 
-                if text != '' and len(text) < 120:
-                    print(f"Transcribed text: {text}")
-                    self.synthesizer.synthesize_text(text)
+            if audio == 'EXIT':
+                break
+
+            text = zundamon_recognizer.recognize_whisper(audio_data=audio, model='small', language='ja')
+
+            if text != '' and len(text) < 120 and text != 'ご視聴ありがとうございました':
+                print(f"Transcribed text: {text}")
+                self.synthesizer.synthesize_text(text)

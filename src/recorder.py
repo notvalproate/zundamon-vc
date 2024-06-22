@@ -41,3 +41,5 @@ class Recorder:
                     self.recordings.put(audio)
                 except sr.UnknownValueError:
                     print("Could not understand audio")
+
+        self.recordings.put('EXIT')
