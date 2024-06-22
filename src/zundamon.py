@@ -3,11 +3,14 @@ from threading import Thread
 
 import readchar
 
+from synthesizer import check_synthesis_installation
 from recorder import Recorder
 from transcriber import Transcriber
 
 class Zundamon:
     def __init__(self):
+        check_synthesis_installation()
+
         self.run_app = Queue()
         self.recorder = Recorder(self.run_app)
         self.transcriber = Transcriber(self.run_app)

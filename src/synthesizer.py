@@ -1,42 +1,42 @@
 import wave
+import sys
+from io import BytesIO
 
 import requests
+import pyaudio
 
 VOICEVOX_API_URL = 'http://localhost:50021'
 
-# For Testing
-import pyaudio
-from io import BytesIO
+p = pyaudio.PyAudio()
+virtual_audio_cable_index = None
+
+def check_synthesis_installation(self):
+    try:
+        requests.get(VOICEVOX_API_URL)
+    except requests.exceptions.ConnectionError:
+        print("VOICEVOX Engine is not running. Please start the VOICEVOX Engine.\nIf not installed, get it from https://voicevox.hiroshiba.jp/")
+        sys.exit(1)
+
+    for i in range(self.p.get_device_count()):
+        if 'CABLE Input (VB-Audio Virtual' in self.p.get_device_info_by_index(i)['name']:
+            virtual_audio_cable_index = i
+            break
+
+    if virtual_audio_cable_index is None:
+        print("VB-Audio Virtual Cable is not installed. Please install it from https://vb-audio.com/Cable/")
+        sys.exit(1)
+
 
 class Synthesizer:
-    def __init__(self):
-        try:
-            requests.get(VOICEVOX_API_URL)
-        except requests.exceptions.ConnectionError:
-            print("Voicevox server is not running. Please start the VOICEVOX Engine.\nInstall it from https://voicevox.hiroshiba.jp/")
-            exit(1)
-        
-        self.p = pyaudio.PyAudio()
-        self.virtual_audio_cable_index = self.get_virtual_audio_cable_index()
-
-
-    def get_virtual_audio_cable_index(self):
-        for i in range(self.p.get_device_count()):
-            if 'CABLE Input (VB-Audio Virtual ' in self.p.get_device_info_by_index(i)['name']:
-                return i
-
-        return None
-
-
     def play_audio_through_vb_cable(self, audio):
         audio_file = BytesIO(audio)
         wav_file = wave.open(audio_file, 'rb')
 
-        stream = self.p.open(format=self.p.get_format_from_width(wav_file.getsampwidth()),
+        stream = p.open(format=p.get_format_from_width(wav_file.getsampwidth()),
                 channels=wav_file.getnchannels(),
                 rate=wav_file.getframerate(),
                 output=True,
-                output_device_index=self.virtual_audio_cable_index)
+                output_device_index=virtual_audio_cable_index)
         
         chunk = 1024
         data = wav_file.readframes(chunk)
