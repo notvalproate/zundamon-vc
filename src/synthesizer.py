@@ -17,8 +17,8 @@ def check_synthesis_installation():
         print("VOICEVOX Engine is not running. Please start the VOICEVOX Engine.\nIf not installed, get it from https://voicevox.hiroshiba.jp/")
         sys.exit(1)
 
-    for i in range(self.p.get_device_count()):
-        if 'CABLE Input (VB-Audio Virtual' in self.p.get_device_info_by_index(i)['name']:
+    for i in range(p.get_device_count()):
+        if 'CABLE Input (VB-Audio Virtual' in p.get_device_info_by_index(i)['name']:
             virtual_audio_cable_index = i
             break
 
