@@ -10,7 +10,7 @@ VOICEVOX_API_URL = 'http://localhost:50021'
 p = pyaudio.PyAudio()
 virtual_audio_cable_index = None
 
-def check_synthesis_installation(self):
+def check_synthesis_installation():
     try:
         requests.get(VOICEVOX_API_URL)
     except requests.exceptions.ConnectionError:
