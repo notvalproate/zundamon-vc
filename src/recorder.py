@@ -36,7 +36,8 @@ class Recorder:
         while not self.run_app_queue.empty():
             with sr.Microphone(device_index=index) as mic:
                 try:
-                    zundamon_recognizer.adjust_for_ambient_noise(mic, duration=0.25)
+                    print("Adjusting for ambient noise...")
+                    zundamon_recognizer.adjust_for_ambient_noise(mic)
                     print("Listening...")
                     audio = zundamon_recognizer.listen(mic)
                     print("Finished Listening!")

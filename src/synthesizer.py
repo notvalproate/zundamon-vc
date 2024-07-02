@@ -56,6 +56,7 @@ class Synthesizer:
 
 
     def get_audio_query(self, text):
+        # params = { 'text': 'V押して。' + text, 'speaker': 1 }
         params = { 'text': text, 'speaker': 1 }
         response = requests.post(f'{VOICEVOX_API_URL}/audio_query', params=params)
         return response.text
